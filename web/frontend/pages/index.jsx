@@ -53,9 +53,10 @@ import { ProductsCard } from "../components";
 import {useNavigate,useLocation} from "react-router-dom";
 
 export default function HomePage() {
-    const { apiUrl } = useContext(AppContext);
+    const  apiUrl  = 'https://phpstack-362288-4387083.cloudwaysapps.com'
     // const { user } = useAuthState();
     const navigate = useNavigate();
+    const appBridge = useAppBridge();
     const [loading, setLoading] = useState(false)
     const [customersLoading, setCustomersLoading] = useState(false)
     const [selected, setSelected] = useState(0);
@@ -74,11 +75,14 @@ export default function HomePage() {
     const [navigation2, setNavigation2] = useState("");
 
 
-    const [audienceSize, SetAudienceSize] = useState('0');
+    const [audienceSize, setAudienceSize] = useState("0");
+
+
 
     const handleAudienceSizeStatusChange = (selectedOption) => {
 
-        SetAudienceSize(selectedOption);
+
+        setAudienceSize(selectedOption);
     };
 
 
@@ -88,8 +92,71 @@ export default function HomePage() {
 
 
 
+    const getData = async () => {
+        const sessionToken = await getSessionToken(appBridge);
 
 
+        try {
+
+            const response = await axios.get(`${apiUrl}/api/setting`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + sessionToken
+                    }
+                })
+
+
+            setNavigation1(response?.data?.data?.navigation1)
+            setNavigation2(response?.data?.data?.navigation2)
+            setAudienceSize(`${response?.data?.data?.audience_size}`);
+            setLoading(false)
+
+        } catch (error) {
+            console.log(error,'errror');
+            setToastMsg(error?.response?.data?.message)
+            setErrorToast(true)
+
+        }
+
+    };
+
+    const settingSave = async () => {
+
+        setLoading(true)
+        const sessionToken = await getSessionToken(appBridge);
+        try {
+
+            let data = {
+                navigation1: navigation1,
+                navigation2: navigation2,
+                audience_size: audienceSize,
+
+            }
+
+            const response = await axios.post(`${apiUrl}/api/setting-save`,data,
+                {
+                    headers: {
+                        Authorization: "Bearer " + sessionToken
+                    }
+                })
+            setToastMsg(response?.data?.message)
+            setSucessToast(true)
+            setLoading(false)
+
+
+        } catch (error) {
+            console.log(error,'error')
+            setToastMsg(error?.response?.data?.message)
+            setErrorToast(true)
+
+        }
+
+    };
+
+
+    useEffect(() => {
+        getData()
+    },[]);
     // ------------------------Toasts Code start here------------------
     const toggleErrorMsgActive = useCallback(() => setErrorToast((errorToast) => !errorToast), []);
     const toggleSuccessMsgActive = useCallback(() => setSucessToast((sucessToast) => !sucessToast), []);
@@ -171,21 +238,21 @@ export default function HomePage() {
                                                 options={[
                                                     {
                                                         label: "0%",
-                                                        value: '0',
+                                                        value: "0",
                                                     },
                                                     {
                                                         label: "10%",
-                                                        value: '10',
+                                                        value: "10",
                                                     },
-                                                    { label: "20%", value: '20' },
-                                                    { label: "30%", value: '30' },
-                                                    { label: "40%", value: '40' },
-                                                    { label: "50%", value: '50' },
-                                                    { label: "60%", value: '60' },
-                                                    { label: "70%", value: '70' },
-                                                    { label: "80%", value: '80' },
-                                                    { label: "90%", value: '90' },
-                                                    { label: "100%", value: '100' },
+                                                    { label: "20%", value: "20" },
+                                                    { label: "30%", value: "30" },
+                                                    { label: "40%", value: "40" },
+                                                    { label: "50%", value: "50" },
+                                                    { label: "60%", value: "60" },
+                                                    { label: "70%", value: "70" },
+                                                    { label: "80%", value: "80" },
+                                                    { label: "90%", value: "90" },
+                                                    { label: "100%", value: "100" },
                                                 ]}
                                                 onChange={handleAudienceSizeStatusChange}
                                                 value={audienceSize}
@@ -194,6 +261,8 @@ export default function HomePage() {
                                                 <PageActions
                                                     primaryAction={{
                                                         content: "Save",
+                                                        onAction: settingSave,
+                                                        loading: btnLoading
 
                                                     }}
                                                 />

@@ -77,22 +77,13 @@ dd($order_metafield);
 });
 
 
-Route::get('orders',[\App\Http\Controllers\OrderController::class,'Orders']);
-Route::get('sync-orders',[\App\Http\Controllers\OrderController::class,'OrdersSync']);
-Route::get('balance-detail',[\App\Http\Controllers\OrderController::class,'BalanceDetail']);
-Route::get('order-detail',[\App\Http\Controllers\OrderController::class,'OrderDetail']);
-Route::post('push-order',[\App\Http\Controllers\OrderController::class,'PushOrder']);
 
-Route::get('send-email',[\App\Http\Controllers\OrderController::class,'SendEmail']);
 
-Route::get('packages-list',[\App\Http\Controllers\OrderController::class,'PackagesList']);
+Route::get('customer-data',[\App\Http\Controllers\Controller::class,'CustomerData']);
+
 
 Route::get('setting',[\App\Http\Controllers\SettingController::class,'Setting']);
 Route::post('setting-save',[\App\Http\Controllers\SettingController::class,'SettingSave']);
-
-
-Route::get('mail-smtp-setting',[\App\Http\Controllers\SettingController::class,'MailSmtp']);
-Route::post('mail-smtp-setting-save',[\App\Http\Controllers\SettingController::class,'MailSmtpSettingSave']);
 
 
 

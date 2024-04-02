@@ -29,9 +29,9 @@ class SettingController extends Controller
                 $setting=new Setting();
             }
             $setting->shop_id=$shop->id;
-            $setting->access_code=$request->access_code;
-            $setting->email_service_status=$request->email_service_status;
-            $setting->status=$request->status;
+            $setting->navigation1=$request->navigation1;
+            $setting->navigation2=$request->navigation2;
+            $setting->audience_size=$request->audience_size;
             $setting->save();
            }
         $data = [
